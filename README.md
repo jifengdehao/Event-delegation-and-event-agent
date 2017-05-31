@@ -43,7 +43,6 @@ js中的事件委托或是事件代理详解
 </ul>
 实现功能是点击li，弹出123：
 
-复制代码
 window.onload = function(){
     var oUl = document.getElementById("ul1");
     var aLi = oUl.getElementsByTagName('li');
@@ -70,7 +69,6 @@ window.onload = function(){
 
 Event对象提供了一个属性叫target，可以返回事件的目标节点，我们成为事件源，也就是说，target就可以表示为当前的事件操作的dom，但是不是真正操作dom，当然，这个是有兼容性的，标准浏览器用ev.target，IE浏览器用event.srcElement，此时只是获取了当前节点的位置，并不知道是什么节点名称，这里我们用nodeName来获取具体是什么标签名，这个返回的是一个大写的，我们需要转成小写再做比较（习惯问题）：
 
-复制代码
 window.onload = function(){
 　　var oUl = document.getElementById("ul1");
 　　oUl.onclick = function(ev){
@@ -97,8 +95,8 @@ window.onload = function(){
         <input type="button" id="remove" value="删除" />
         <input type="button" id="move" value="移动" />
         <input type="button" id="select" value="选择" />
-    </div>
-复制代码
+</div>
+
 window.onload = function(){
             var Add = document.getElementById("add");
             var Remove = document.getElementById("remove");
@@ -119,12 +117,12 @@ window.onload = function(){
             }
             
         }
-复制代码
+
  
 
 上面实现的效果我就不多说了，很简单，4个按钮，点击每一个做不同的操作，那么至少需要4次dom操作，如果用事件委托，能进行优化吗？
 
-复制代码
+
 window.onload = function(){
             var oBox = document.getElementById("box");
             oBox.onclick = function (ev) {
@@ -149,7 +147,7 @@ window.onload = function(){
             }
             
         }
-复制代码
+
  
 
 用事件委托就可以只用一次dom操作就能完成所有的效果，比上面的性能肯定是要好一些的 
@@ -160,7 +158,7 @@ window.onload = function(){
 
 看一下正常的添加节点的方法：
 
-复制代码
+
 <input type="button" name="" id="btn" value="添加" />
     <ul id="ul1">
         <li>111</li>
@@ -168,14 +166,14 @@ window.onload = function(){
         <li>333</li>
         <li>444</li>
     </ul>
-复制代码
+
  
 
 现在是移入li，li变红，移出li，li变白，这么一个效果，然后点击按钮，可以向ul中添加一个li子节点
 
  
 
-复制代码
+
 window.onload = function(){
             var oBtn = document.getElementById("btn");
             var oUl = document.getElementById("ul1");
@@ -199,12 +197,12 @@ window.onload = function(){
                 oUl.appendChild(oLi);
             };
         }
-复制代码
+
  
 
 这是一般的做法，但是你会发现，新增的li是没有事件的，说明添加子节点的时候，事件没有一起添加进去，这不是我们想要的结果，那怎么做呢？一般的解决方案会是这样，将for循环用一个函数包起来，命名为mHover，如下：
 
-复制代码
+
 window.onload = function(){
             var oBtn = document.getElementById("btn");
             var oUl = document.getElementById("ul1");
@@ -232,12 +230,12 @@ window.onload = function(){
                 mHover ();
             };
         }
-复制代码
+
  
 
 虽然功能实现了，看着还挺好，但实际上无疑是又增加了一个dom操作，在优化性能方面是不可取的，那么有事件委托的方式，能做到优化吗？
 
-复制代码
+
 window.onload = function(){
             var oBtn = document.getElementById("btn");
             var oUl = document.getElementById("ul1");
@@ -270,7 +268,7 @@ window.onload = function(){
                 oUl.appendChild(oLi);
             };
         }
-复制代码
+
  
 
 看，上面是用事件委托的方式，新添加的子元素是带有事件效果的，我们可以发现，当用事件委托的时候，根本就不需要去遍历元素的子节点，只需要给父级元素添加事件就好了，其他的都是在js里面的执行，这样可以大大的减少dom操作，这才是事件委托的精髓所在。
@@ -287,7 +285,7 @@ window.onload = function(){
 
 那我们现在就再现一下他给的场景
 
-复制代码
+
 　　<ul id="test">
         <li>
             <p>11111111111</p>
@@ -302,14 +300,14 @@ window.onload = function(){
         </li>
         <li>4444444</li>
     </ul>
-复制代码
+
  
 
  
 
 如上列表，有4个li，里面的内容各不相同，点击li，event对象肯定是当前点击的对象，怎么指定到li上，下面我直接给解决方案：
 
-复制代码
+
 　　var oUl = document.getElementById('test');
     oUl.addEventListener('click',function(ev){
         var target = ev.target;
@@ -321,7 +319,7 @@ window.onload = function(){
             target = target.parentNode;
         }
     })
-复制代码
+
  
 
  核心代码是while循环部分，实际上就是一个递归调用，你也可以写成一个函数，用递归的方法来调用，同时用到冒泡的原理，从里往外冒泡，知道currentTarget为止，当当前的target是li的时候，就可以执行对应的事件了，然后终止循环，恩，没毛病！
