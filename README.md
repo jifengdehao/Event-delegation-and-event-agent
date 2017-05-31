@@ -42,44 +42,45 @@ js中的事件委托或是事件代理详解
     <li>444</li>
 </ul>
 实现功能是点击li，弹出123：
-
-window.onload = function(){
-    var oUl = document.getElementById("ul1");
-    var aLi = oUl.getElementsByTagName('li');
-    for(var i=0;i<aLi.length;i++){
-        aLi[i].onclick = function(){
-            alert(123);
-        }
-    }
-}
+#
+#window.onload = function(){
+#    var oUl = document.getElementById("ul1");
+#    var aLi = oUl.getElementsByTagName('li');
+#    for(var i=0;i<aLi.length;i++){
+#        aLi[i].onclick = function(){
+#            alert(123);
+#        }
+#    }
+#}
+#
 复制代码
  上面的代码的意思很简单，相信很多人都是这么实现的，我们看看有多少次的dom操作，首先要找到ul，然后遍历li，然后点击li的时候，又要找一次目标的li的位置，才能执行最后的操作，每次点击都要找一次li；
 
 那么我们用事件委托的方式做又会怎么样呢？
 
-window.onload = function(){
-    var oUl = document.getElementById("ul1");
-   oUl.onclick = function(){
-        alert(123);
-    }
-}
+# window.onload = function(){
+#    var oUl = document.getElementById("ul1");
+#    oUl.onclick = function(){
+#        alert(123);
+#    }
+#}
  
 
 这里用父级ul做事件处理，当li被点击时，由于冒泡原理，事件就会冒泡到ul上，因为ul上有点击事件，所以事件就会触发，当然，这里当点击ul的时候，也是会触发的，那么问题就来了，如果我想让事件代理的效果跟直接给节点的事件效果一样怎么办，比如说只有点击li才会触发，不怕，我们有绝招：
 
 Event对象提供了一个属性叫target，可以返回事件的目标节点，我们成为事件源，也就是说，target就可以表示为当前的事件操作的dom，但是不是真正操作dom，当然，这个是有兼容性的，标准浏览器用ev.target，IE浏览器用event.srcElement，此时只是获取了当前节点的位置，并不知道是什么节点名称，这里我们用nodeName来获取具体是什么标签名，这个返回的是一个大写的，我们需要转成小写再做比较（习惯问题）：
 
-window.onload = function(){
-　　var oUl = document.getElementById("ul1");
-　　oUl.onclick = function(ev){
-　　　　var ev = ev || window.event;
-　　　　var target = ev.target || ev.srcElement;
-　　　　if(target.nodeName.toLowerCase() == 'li'){
-　 　　　　　　	alert(123);
-　　　　　　　  alert(target.innerHTML);
-　　　　}
-　　}
-}
+# window.onload = function(){
+#　　var oUl = document.getElementById("ul1");
+#　　oUl.onclick = function(ev){
+#　　　　var ev = ev || window.event;
+#　　　　var target = ev.target || ev.srcElement;
+#　　　　if(target.nodeName.toLowerCase() == 'li'){
+#　 　　　　　　	alert(123);
+#　　　　　　　  alert(target.innerHTML);
+#　　　　}
+#　　}
+# }
 
 复制代码
  
@@ -97,56 +98,53 @@ window.onload = function(){
         <input type="button" id="select" value="选择" />
 </div>
 
-window.onload = function(){
-            var Add = document.getElementById("add");
-            var Remove = document.getElementById("remove");
-            var Move = document.getElementById("move");
-            var Select = document.getElementById("select");
-            
-            Add.onclick = function(){
-                alert('添加');
-            };
-            Remove.onclick = function(){
-                alert('删除');
-            };
-            Move.onclick = function(){
-                alert('移动');
-            };
-            Select.onclick = function(){
-                alert('选择');
-            }
-            
-        }
+# window.onload = function(){
+#            var Add = document.getElementById("add");
+#            var Remove = document.getElementById("remove");
+#            var Move = document.getElementById("move");
+#            var Select = document.getElementById("select");            
+#            Add.onclick = function(){
+#                alert('添加');
+#           };
+#            Remove.onclick = function(){
+#                alert('删除');
+#            };
+#           Move.onclick = function(){
+#                alert('移动');
+#            };
+#            Select.onclick = function(){
+#                alert('选择');
+#            }            
+#        }
 
  
 
 上面实现的效果我就不多说了，很简单，4个按钮，点击每一个做不同的操作，那么至少需要4次dom操作，如果用事件委托，能进行优化吗？
 
 
-window.onload = function(){
-            var oBox = document.getElementById("box");
-            oBox.onclick = function (ev) {
-                var ev = ev || window.event;
-                var target = ev.target || ev.srcElement;
-                if(target.nodeName.toLocaleLowerCase() == 'input'){
-                    switch(target.id){
-                        case 'add' :
-                            alert('添加');
-                            break;
-                        case 'remove' :
-                            alert('删除');
-                            break;
-                        case 'move' :
-                            alert('移动');
-                            break;
-                        case 'select' :
-                            alert('选择');
-                            break;
-                    }
-                }
-            }
-            
-        }
+# window.onload = function(){
+#            var oBox = document.getElementById("box");
+#            oBox.onclick = function (ev) {
+#                var ev = ev || window.event;
+#                var target = ev.target || ev.srcElement;
+#                if(target.nodeName.toLocaleLowerCase() == 'input'){
+#                    switch(target.id){
+#                        case 'add' :
+#                            alert('添加');
+#                            break;
+#                        case 'remove' :
+#                            alert('删除');
+#                            break;
+#                        case 'move' :
+#                            alert('移动');
+#                            break;
+#                        case 'select' :
+#                            alert('选择');
+#                            break;
+#                    }
+#                }
+#            }            
+#        }
 
  
 
@@ -174,100 +172,98 @@ window.onload = function(){
  
 
 
-window.onload = function(){
-            var oBtn = document.getElementById("btn");
-            var oUl = document.getElementById("ul1");
-            var aLi = oUl.getElementsByTagName('li');
-            var num = 4;
+# window.onload = function(){
+#            var oBtn = document.getElementById("btn");
+#            var oUl = document.getElementById("ul1");
+#            var aLi = oUl.getElementsByTagName('li');
+#            var num = 4;
             
-            //鼠标移入变红，移出变白
-            for(var i=0; i<aLi.length;i++){
-                aLi[i].onmouseover = function(){
-                    this.style.background = 'red';
-                };
-                aLi[i].onmouseout = function(){
-                    this.style.background = '#fff';
-                }
-            }
-            //添加新节点
-            oBtn.onclick = function(){
-                num++;
-                var oLi = document.createElement('li');
-                oLi.innerHTML = 111*num;
-                oUl.appendChild(oLi);
-            };
-        }
+#            //鼠标移入变红，移出变白
+#            for(var i=0; i<aLi.length;i++){
+#                aLi[i].onmouseover = function(){
+#                    this.style.background = 'red';
+#                };
+#                aLi[i].onmouseout = function(){
+#                    this.style.background = '#fff';
+#                }
+#            }
+#            //添加新节点
+#            oBtn.onclick = function(){
+#                num++;
+#                var oLi = document.createElement('li');
+#                oLi.innerHTML = 111*num;
+#                oUl.appendChild(oLi);
+#            };
+#        }
 
  
 
 这是一般的做法，但是你会发现，新增的li是没有事件的，说明添加子节点的时候，事件没有一起添加进去，这不是我们想要的结果，那怎么做呢？一般的解决方案会是这样，将for循环用一个函数包起来，命名为mHover，如下：
 
 
-window.onload = function(){
-            var oBtn = document.getElementById("btn");
-            var oUl = document.getElementById("ul1");
-            var aLi = oUl.getElementsByTagName('li');
-            var num = 4;
+# window.onload = function(){
+#            var oBtn = document.getElementById("btn");
+#            var oUl = document.getElementById("ul1");
+#            var aLi = oUl.getElementsByTagName('li');
+#            var num = 4;
             
-            function mHover () {
-                //鼠标移入变红，移出变白
-                for(var i=0; i<aLi.length;i++){
-                    aLi[i].onmouseover = function(){
-                        this.style.background = 'red';
-                    };
-                    aLi[i].onmouseout = function(){
-                        this.style.background = '#fff';
-                    }
-                }
-            }
-            mHover ();
-            //添加新节点
-            oBtn.onclick = function(){
-                num++;
-                var oLi = document.createElement('li');
-                oLi.innerHTML = 111*num;
-                oUl.appendChild(oLi);
-                mHover ();
-            };
-        }
+#            function mHover () {
+#                //鼠标移入变红，移出变白
+#                for(var i=0; i<aLi.length;i++){
+#                    aLi[i].onmouseover = function(){
+#                        this.style.background = 'red';
+#                    };
+#                    aLi[i].onmouseout = function(){
+#                        this.style.background = '#fff';
+#                    }
+#               }
+#            }
+#            mHover ();
+#            //添加新节点
+#            oBtn.onclick = function(){
+#               num++;
+#                var oLi = document.createElement('li');
+#                oLi.innerHTML = 111*num;
+#                oUl.appendChild(oLi);
+#                mHover ();
+#            };
+#        }
 
  
 
 虽然功能实现了，看着还挺好，但实际上无疑是又增加了一个dom操作，在优化性能方面是不可取的，那么有事件委托的方式，能做到优化吗？
 
 
-window.onload = function(){
-            var oBtn = document.getElementById("btn");
-            var oUl = document.getElementById("ul1");
-            var aLi = oUl.getElementsByTagName('li');
-            var num = 4;
+# window.onload = function(){
+#            var oBtn = document.getElementById("btn");
+#            var oUl = document.getElementById("ul1");
+#            var aLi = oUl.getElementsByTagName('li');
+#            var num = 4;
             
-            //事件委托，添加的子元素也有事件
-            oUl.onmouseover = function(ev){
-                var ev = ev || window.event;
-                var target = ev.target || ev.srcElement;
-                if(target.nodeName.toLowerCase() == 'li'){
-                    target.style.background = "red";
-                }
-                
-            };
-            oUl.onmouseout = function(ev){
-                var ev = ev || window.event;
-                var target = ev.target || ev.srcElement;
-                if(target.nodeName.toLowerCase() == 'li'){
-                    target.style.background = "#fff";
-                }
-                
-            };
+#            //事件委托，添加的子元素也有事件
+#            oUl.onmouseover = function(ev){
+#               var ev = ev || window.event;
+#                var target = ev.target || ev.srcElement;
+#                if(target.nodeName.toLowerCase() == 'li'){
+#                    target.style.background = "red";
+#                }                
+#            };
+#            oUl.onmouseout = function(ev){
+#                var ev = ev || window.event;
+#                var target = ev.target || ev.srcElement;
+#                if(target.nodeName.toLowerCase() == 'li'){
+#                    target.style.background = "#fff";
+#                }                
+#            };
             
-            //添加新节点
-            oBtn.onclick = function(){
-                num++;
-                var oLi = document.createElement('li');
-                oLi.innerHTML = 111*num;
-                oUl.appendChild(oLi);
-            };
-        }
+#            //添加新节点
+#            oBtn.onclick = function(){
+#                num++;
+#                var oLi = document.createElement('li');
+#                oLi.innerHTML = 111*num;
+#                oUl.appendChild(oLi);
+#            };
+#        }
 
  
 
@@ -308,17 +304,17 @@ window.onload = function(){
 如上列表，有4个li，里面的内容各不相同，点击li，event对象肯定是当前点击的对象，怎么指定到li上，下面我直接给解决方案：
 
 
-　　var oUl = document.getElementById('test');
-    oUl.addEventListener('click',function(ev){
-        var target = ev.target;
-        while(target !== oUl ){
-            if(target.tagName.toLowerCase() == 'li'){
-                console.log('li click~');
-                break;
-            }
-            target = target.parentNode;
-        }
-    })
+#　　var oUl = document.getElementById('test');
+#    oUl.addEventListener('click',function(ev){
+#        var target = ev.target;
+#        while(target !== oUl ){
+#            if(target.tagName.toLowerCase() == 'li'){
+#                console.log('li click~');
+#                break;
+#            }
+#            target = target.parentNode;
+#        }
+#    })
 
  
 
