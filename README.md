@@ -43,7 +43,7 @@ js中的事件委托或是事件代理详解
 </ul>
 实现功能是点击li，弹出123：
 #
-#window.onload = function(){
+# window.onload = function(){
 #    var oUl = document.getElementById("ul1");
 #    var aLi = oUl.getElementsByTagName('li');
 #    for(var i=0;i<aLi.length;i++){
@@ -51,7 +51,7 @@ js中的事件委托或是事件代理详解
 #            alert(123);
 #        }
 #    }
-#}
+# }
 #
 复制代码
  上面的代码的意思很简单，相信很多人都是这么实现的，我们看看有多少次的dom操作，首先要找到ul，然后遍历li，然后点击li的时候，又要找一次目标的li的位置，才能执行最后的操作，每次点击都要找一次li；
